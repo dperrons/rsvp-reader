@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#16161a"/>
+  <rect x="196" y="118" width="8" height="52" rx="4" fill="#ff5c47" opacity="0.8"/>
+  <rect x="196" y="342" width="8" height="52" rx="4" fill="#ff5c47" opacity="0.8"/>
+  <text x="136" y="282" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="120" font-weight="600" fill="#ecebe8" letter-spacing="-2">l<tspan fill="#ff5c47" font-weight="800">e</tspan>ggi</text>
+</svg>

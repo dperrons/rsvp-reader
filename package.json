@@ -1,0 +1,12 @@
+{
+  "name": "rsvp-reader",
+  "version": "1.0.0",
+  "description": "Lettore RSVP per iPhone: carica EPUB, PDF, DOCX e TXT e leggi una parola alla volta",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/unit.test.mjs",
+    "test:e2e": "node tests/e2e.cjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}

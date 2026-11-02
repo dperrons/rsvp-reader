@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RSVP Reader</title>
+    <meta name="description" content="Lettore veloce: una parola alla volta, per EPUB, PDF, DOCX e TXT." />
+    <meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7f5f0" media="(prefers-color-scheme: light)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="RSVP" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="src/app.js"></script>
+  </head>
+  <body>
+    <!-- LIBRERIA -->
+    <section id="library" class="view" aria-label="Libreria">
+      <header class="bar">
+        <h1>Libreria</h1>
+        <button class="icon-btn" id="open-settings" aria-label="Impostazioni">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        </button>
+      </header>
+      <div id="backup-reminder" class="banner" hidden>
+        <span>Non fai un backup della libreria da un po'. Su iPhone i dati delle app web possono essere cancellati.</span>
+        <button id="reminder-backup" class="link-btn">Fai il backup</button>
+      </div>
+      <ul id="book-list" class="book-list"></ul>
+      <div id="empty-library" class="empty" hidden>
+        <p class="empty-title">La libreria è vuota</p>
+        <p>Tocca <strong>+</strong> per caricare un libro (EPUB, PDF, DOCX, TXT) o incollare del testo.</p>
+        <p class="muted">I libri Kindle sono protetti da DRM e non si possono aprire: servono libri in EPUB senza DRM, per esempio da Liber Liber, Project Gutenberg o Standard Ebooks.</p>
+      </div>
+      <button id="add-btn" class="fab" aria-label="Aggiungi">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <input id="file-input" type="file" class="visually-hidden" tabindex="-1" aria-hidden="true" />
+    </section>
+
+    <!-- LETTORE -->
+    <section id="reader" class="view" aria-label="Lettore" hidden>
+      <header class="bar reader-bar">
+        <button class="icon-btn" id="back-btn" aria-label="Torna alla libreria">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="reader-title">
+          <div id="reader-book" class="ellipsis"></div>
+          <div id="reader-chapter" class="ellipsis muted small"></div>
+        </div>
+        <button class="icon-btn" id="toc-btn" aria-label="Capitoli">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        </button>
+      </header>
+
+      <div id="stage" class="stage" aria-live="off">
+        <div class="tick top"></div>
+        <div id="word" class="word"><span class="w-left"></span><span class="w-orp"></span><span class="w-right"></span></div>
+        <div class="tick bottom"></div>
+        <div id="hint" class="hint">Tocca per iniziare</div>
+        <div id="speed-flash" class="speed-flash" hidden></div>
+      </div>
+
+      <div id="context" class="context" hidden></div>
+
+      <footer class="reader-footer">
+        <div class="progress"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="status-row">
+          <span id="status-left" class="small muted"></span>
+          <span id="status-right" class="small muted"></span>
+        </div>
+        <div class="controls">
+          <button class="icon-btn" id="slower-btn" aria-label="Più lento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <button class="icon-btn" id="prev-btn" aria-label="Frase precedente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
+          <button class="play-btn" id="play-btn" aria-label="Leggi">
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+          </button>
+          <button class="icon-btn" id="next-btn" aria-label="Frase successiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
+          <button class="icon-btn" id="faster-btn" aria-label="Più veloce"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+        <div class="wpm-row small muted"><span id="wpm-label"></span></div>
+      </footer>
+    </section>
+
+    <!-- IMPOSTAZIONI -->
+    <section id="settings" class="view" aria-label="Impostazioni" hidden>
+      <header class="bar">
+        <button class="icon-btn" id="settings-back" aria-label="Indietro">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h1>Impostazioni</h1>
+        <span class="icon-btn-spacer"></span>
+      </header>
+      <div class="settings-body">
+        <h2>Lettura</h2>
+        <div class="card">
+          <label class="row">
+            <span>Velocità</span>
+            <span><output id="wpm-out"></output> parole/min</span>
+          </label>
+          <input id="wpm-input" type="range" min="100" max="1200" step="25" />
+          <label class="row switch-row">
+            <span>Accelerazione graduale<br /><span class="small muted">Parte più lento e arriva alla velocità in 3 secondi</span></span>
+            <input id="ramp-input" type="checkbox" class="switch" />
+          </label>
+          <label class="row">
+            <span>Dimensione del testo</span>
+            <output id="font-out"></output>
+          </label>
+          <input id="font-input" type="range" min="28" max="64" step="2" />
+          <label class="row">
+            <span>Tema</span>
+            <select id="theme-input">
+              <option value="auto">Automatico</option>
+              <option value="dark">Scuro</option>
+              <option value="light">Chiaro</option>
+            </select>
+          </label>
+        </div>
+
+        <h2>Statistiche</h2>
+        <div class="card stats" id="stats"></div>
+
+        <h2>Backup</h2>
+        <div class="card">
+          <p class="small muted">Libri, progressi e statistiche stanno solo su questo dispositivo. Esporta un backup ogni tanto e salvalo in File o iCloud Drive.</p>
+          <p class="small" id="last-backup"></p>
+          <div class="btn-row">
+            <button id="export-btn" class="btn">Esporta libreria</button>
+            <button id="import-btn" class="btn secondary">Importa libreria</button>
+          </div>
+          <input id="backup-input" type="file" class="visually-hidden" tabindex="-1" aria-hidden="true" />
+        </div>
+
+        <h2>Dati</h2>
+        <div class="card">
+          <button id="clear-btn" class="btn danger">Cancella tutti i dati</button>
+        </div>
+
+        <p class="small muted about">
+          RSVP Reader · i libri non lasciano mai questo dispositivo.<br />
+          I libri Kindle hanno il DRM e non si possono aprire: usa EPUB senza DRM, PDF, DOCX o TXT.
+        </p>
+      </div>
+    </section>
+
+    <!-- FOGLI E AVVISI -->
+    <div id="sheet-backdrop" class="backdrop" hidden></div>
+    <div id="add-sheet" class="sheet" role="dialog" aria-label="Aggiungi" hidden>
+      <button class="sheet-item" id="pick-file">Carica file<span class="small muted">EPUB, PDF, DOCX, TXT</span></button>
+      <button class="sheet-item" id="paste-text">Incolla testo<span class="small muted">Un articolo, una pagina, appunti</span></button>
+      <button class="sheet-item cancel" data-close>Annulla</button>
+    </div>
+
+    <div id="paste-sheet" class="sheet tall" role="dialog" aria-label="Incolla testo" hidden>
+      <div class="sheet-head">
+        <button class="link-btn" data-close>Annulla</button>
+        <strong>Incolla testo</strong>
+        <button class="link-btn strong" id="paste-save">Leggi</button>
+      </div>
+      <input id="paste-title" class="field" type="text" placeholder="Titolo (facoltativo)" autocomplete="off" />
+      <textarea id="paste-area" class="field area" placeholder="Incolla qui il testo…"></textarea>
+    </div>
+
+    <div id="book-sheet" class="sheet" role="dialog" aria-label="Libro" hidden>
+      <div class="sheet-info" id="book-sheet-info"></div>
+      <button class="sheet-item" id="book-restart">Ricomincia dall'inizio</button>
+      <button class="sheet-item danger-text" id="book-delete">Elimina dalla libreria</button>
+      <button class="sheet-item cancel" data-close>Annulla</button>
+    </div>
+
+    <div id="toc-sheet" class="sheet tall" role="dialog" aria-label="Capitoli" hidden>
+      <div class="sheet-head">
+        <span></span>
+        <strong>Capitoli</strong>
+        <button class="link-btn" data-close>Chiudi</button>
+      </div>
+      <ol id="toc-list" class="toc-list"></ol>
+    </div>
+
+    <div id="busy" class="busy" hidden><div class="spinner"></div><p id="busy-text">Importo…</p></div>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>
