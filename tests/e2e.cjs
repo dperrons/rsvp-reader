@@ -201,7 +201,7 @@ async function backToLibrary(page) {
       await page.mouse.move(cx, cy - 40, { steps: 5 });
       await page.mouse.up();
       const after = await page.evaluate(() => document.getElementById('wpm-label').textContent);
-      assert.equal(parseInt(after), parseInt(before) + 25);
+      assert.equal(parseInt(after), parseInt(before) + 10);
       await page.mouse.click(cx, cy);
       await page.waitForTimeout(300);
       assert.ok(await page.evaluate(() => document.getElementById('reader').classList.contains('reader-playing')));

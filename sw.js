@@ -1,7 +1,7 @@
 // Service worker: tiene in cache tutta l'app per usarla offline.
 // Ogni volta che cambi un file, aumenta VERSION così i telefoni scaricano la versione nuova.
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = `rsvp-reader-${VERSION}`;
 const FILES = [
   './',

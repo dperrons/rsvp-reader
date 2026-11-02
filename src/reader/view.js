@@ -8,7 +8,7 @@ import { formatDuration, wordsBefore } from '../stats.js';
 
 const $ = (id) => document.getElementById(id);
 const SAVE_EVERY_MS = 5000;
-const WPM_STEP = 25;
+const WPM_STEP = 10;
 
 /** Tempo medio di una parola, in unità di parola, compresi pause e vuoti di paragrafo. */
 export function averageFactor(words) {

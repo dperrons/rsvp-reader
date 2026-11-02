@@ -17,7 +17,7 @@ lettera di fissazione in rosso, così l'occhio non deve mai spostarsi.
 | Gesto | Azione |
 |---|---|
 | Tocco sulla parola | Leggi / pausa |
-| Scorri in su / in giù | Velocità +25 / −25 parole al minuto |
+| Scorri in su / in giù | Velocità +10 / −10 parole al minuto |
 | Scorri a sinistra / a destra | Frase precedente / successiva |
 | Tocco su una parola del contesto (in pausa) | Riparti da quella parola |
 

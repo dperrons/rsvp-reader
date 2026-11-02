@@ -48,7 +48,7 @@ mostra il testo.
   paragrafo (preceduta da un vuoto). I moltiplicatori di punteggiatura e lunghezza si combinano prendendo il massimo
   della punteggiatura e moltiplicando per quello della lunghezza.
 - **Accelerazione graduale**: dal 60 % al 100 % in 3 secondi, alla partenza e dopo ogni pausa (disattivabile).
-- **Comandi**: tocco al centro = play/pausa; scorrimento su/giù = ±25 wpm; sinistra = frase precedente, destra =
+- **Comandi**: tocco al centro = play/pausa; scorrimento su/giù = ±10 wpm; sinistra = frase precedente, destra =
   frase successiva. Barra di avanzamento del capitolo e tempo rimanente in basso.
 - **Contesto in pausa**: paragrafo precedente, corrente e successivo con la parola corrente evidenziata; tocco su
   una parola = ripartire da lì; accesso all'indice dei capitoli.
